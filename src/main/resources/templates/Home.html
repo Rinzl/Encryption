@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Encryption</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div th:insert="fragments/Navbar"></div>
+    <div class="container m-t-3 text-center center">
+        <h3>Public/Private key pair generator</h3>
+
+        <label>
+            Your private key :
+            <br>
+            <textarea id="private-key" th:label="private-key" rows="10" cols="70" disabled>
+            </textarea>
+        </label>
+
+        <label>
+            Your public key :
+            <br>
+            <textarea id="public-key" th:label="public-key" rows="7" cols="70" disabled>
+            </textarea>
+        </label>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $.get("/api/generate", function (data, status) {
+            if (status === "success") {
+                const privateKey = data.privateKey;
+                const publicKey = data.publicKey;
+                $('#private-key').val(privateKey);
+                $('#public-key').val(publicKey);
+            }
+        })
+    });
+</script>
+</html>

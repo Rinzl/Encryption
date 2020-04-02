@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Encryption</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div th:insert="fragments/Navbar"></div>
+    <div class="container m-t-3 text-center">
+
+        <h3>Cipher</h3>
+        <label>
+            Your message :
+            <br>
+            <textarea id="message" rows="2" cols="40"></textarea>
+        </label>
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 center">
+                    <label>
+                        Your private key :
+                        <br>
+                        <textarea id="private-key" rows="10" cols="70"></textarea>
+                    </label>
+                    <br>
+                    <button id="btnEncrypt" class="btn btn-dark">Encrypt</button>
+                    <br>
+                    <label>
+                        Your encrypted message :
+                        <br>
+                        <textarea id="encrypted-message" rows="5" cols="70"></textarea>
+                    </label>
+                </div>
+                <div class="col-md-6 center">
+                    <label>
+                        Your public key message :
+                        <br>
+                        <textarea id="public-key" rows="10" cols="70"></textarea>
+                    </label>
+                    <br>
+                    <button id="btnDecrypt" class="btn btn-dark">Decrypt</button>
+                    <br>
+                    <label>
+                        Your decrypted message :
+                        <br>
+                        <textarea id="decrypted-message" rows="5" cols="70"></textarea>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnEncrypt').click(function () {
+            const privateKey = $('#private-key').val();
+            const message = $('#message').val();
+            const postData = {
+                privateKey: privateKey,
+                content: message
+            };
+            $.ajax({
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                type: "POST",
+                url: "/api/encrypt",
+                data: JSON.stringify(postData),
+                success: function (data) {
+                    console.log("encrypted %s", data);
+                    $('#encrypted-message').val(data);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+        $('#btnDecrypt').click(function () {
+            const publicKey = $('#public-key').val();
+            const encryptedMessage = $('#encrypted-message').val();
+            const postData = {
+                publicKey: publicKey,
+                encryptedText: encryptedMessage
+            };
+            $.ajax({
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                type: "POST",
+                url: "/api/decrypt",
+                data: JSON.stringify(postData),
+                success: function (data) {
+                    console.log("decrypted: %s", data);
+                    $('#decrypted-message').val(data);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+    });
+</script>
+</html>
