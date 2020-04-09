@@ -14,28 +14,31 @@
 </head>
 <body>
     <div th:insert="fragments/Navbar"></div>
-    <div class="container m-t-3 text-center center">
+    <div class="container mt-3 text-center center">
         <h3>Public/Private key pair generator</h3>
 
-        <label>
-            Your private key :
-            <br>
-            <textarea id="private-key" th:label="private-key" rows="10" cols="70" disabled>
-            </textarea>
-        </label>
-
-        <label>
-            Your public key :
-            <br>
-            <textarea id="public-key" th:label="public-key" rows="7" cols="70" disabled>
-            </textarea>
-        </label>
+        <br>
+        <div class="mb-5">
+            <label for="private-key">Your private key :</label>
+            <button id="copy-private" class="btn btn-info" data-clipboard-target="#private-key">Copy private key</button>
+        </div>
+        <textarea id="private-key" th:label="private-key" rows="10" cols="70" readonly>
+        </textarea>
+        <br>
+        <div class="mb-5 mt-5">
+            <label for="private-key">Your public key :</label>
+            <button id="copy-public" class="btn btn-info" data-clipboard-target="#public-key">Copy public key</button>
+        </div>
+        <textarea id="public-key" th:label="public-key" rows="7" cols="70" readonly>
+        </textarea>
     </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
 <script>
     $(document).ready(function () {
+        new ClipboardJS('.btn');
         $.get("/api/generate", function (data, status) {
             if (status === "success") {
                 const privateKey = data.privateKey;
@@ -43,7 +46,30 @@
                 $('#private-key').val(privateKey);
                 $('#public-key').val(publicKey);
             }
-        })
+        });
+
+        $('#copy-private').click(function () {
+            let text = `
+            <div id="copy-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+                Your private key is copied to clipboard
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            `;
+            $('.container').prepend(text);
+        });
+        $('#copy-public').click(function () {
+            let text = `
+            <div id="copy-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+                Your public key is copied to clipboard
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            `;
+            $('.container').prepend(text);
+        });
     });
 </script>
 </html>
