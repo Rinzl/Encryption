@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class EncryptionController {
 
-    private EncryptionService encryptionService;
+    private final EncryptionService encryptionService;
 
     @Autowired
     public EncryptionController(EncryptionService encryptionService) {
